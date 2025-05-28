@@ -1,3 +1,5 @@
+![Build Status](https://img.shields.io/github/workflow/status/sholt0r/wildcard-dns/CI?label=build-and-push)
+
 # wildcard-dns
 
 A simple wildcard DNS server written in Go.
