@@ -23,9 +23,9 @@ docker build -t wildcard-dns .
 
 docker run --rm --expose 53/udp
 -e DNS_PORT=":53"
--e TRAEFIK_IP="172.19.0.250"
+-e TRAEFIK_IP="172.16.0.201"
 -e DOMAIN_ZONE="localhost"
--e UPSTREAM_DNS="1.1.1.1:53"
+-e UPSTREAM_DNS="127.0.0.11:53"
 wildcard-dns
 ```
 
