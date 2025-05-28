@@ -13,7 +13,7 @@ import (
 var (
 	dnsPort			= os.Getenv("DNS_PORT")
 	proxyIP			= os.Getenv("DNS_PROXY")
-	domainZone	= os.Getenv("DNS_ZONE")
+	domainZone	= ensureDot(os.Getenv("DNS_ZONE"))
 	upstreamDNS	= os.Getenv("DNS_UPSTREAM")
 )
 
@@ -29,37 +29,37 @@ func handleDNS(w dns.ResponseWriter, r *dns.Msg) {
 	msg.SetReply(r)
 	msg.Authoritative = true
 
-	var forwarded bool
-
 	for _, q := range r.Question {
 		log.Printf("Query: %s %d", q.Name, q.Qtype)
 
 		if strings.HasSuffix(q.Name, domainZone) && q.Qtype == dns.TypeA {
-			rr := &dns.A{
-				Hdr: dns.RR_Header{
-					Name: 	q.Name,
-					Rrtype:	dns.TypeA,
-					Class: 	dns.ClassINET,
-					Ttl:		60,
-				},
-				A: net.ParseIP(proxyIP),
+			switch q.Qtype {
+			case dns.TypeA:
+				rr := &dns.A{
+					Hdr: dns.RR_Header{
+						Name: 	q.Name,
+						Rrtype:	dns.TypeA,
+						Class: 	dns.ClassINET,
+						Ttl:		60,
+					},
+					A: net.ParseIP(proxyIP),
+				}
+				msg.Answer = append(msg.Answer, rr)
+			case dns.TypeAAAA:
+				log.Printf("Ignoring AAAA query for %s", q.Name)
+			default:
+				log.Printf("Unsupported query type %d for %s", q.Qtype, q.Name)
 			}
-			msg.Answer = append(msg.Answer, rr)
-		} else {
-			resp, err := forwardQuery(r)
-			if err != nil {
-				log.Printf("Forwarding error: %v", err)
-				dns.HandleFailed(w, r)
-				return
-			}
-			w.WriteMsg(resp)
-			forwarded = true
-			break
+			w.WriteMsg(&msg)
+			return
 		}
-	}
-
-	if !forwarded {
-		w.WriteMsg(&msg)
+		resp, err := forwardQuery(r)
+		if err != nil {
+			log.Printf("Forwarding error: %v", err)
+			dns.HandleFailed(w, r)
+			return
+		}
+		w.WriteMsg(resp)
 	}
 }
 
