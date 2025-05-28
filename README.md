@@ -2,9 +2,8 @@
 
 A simple wildcard DNS server written in Go.
 Resolves all `*.<zone>` requests to a user-defined IP (e.g. Traefik) and forwards all other requests to a configurable upstream DNS server.
-Intended for use in internal docker setups. E.g. resolving service.localhost to traefik.
 
-I built it for me, so if it doesn't work for you, so be it.
+I built it for me, so if it doesn't work for you, fork it and change it, idc.
 
 ## Usage
 
@@ -35,7 +34,7 @@ wildcard-dns
 service:
   wildcard-dns:
     container_name: wildcard-dns
-    image: sholt0r/wildcard-dns:latest
+    image: ghcr.io/sholt0r/wildcard-dns:latest
     restart: unless-stopped
     networks:
         proxy:
