@@ -1,14 +1,10 @@
 # wildcarddns
 
 A simple wildcard DNS server written in Go.
-Resolves all `*.localhost` domains to a user-defined IP (e.g. Traefik) and forwards all other requests to a configurable upstream DNS server.
+Resolves all `*.<zone>` requests to a user-defined IP (e.g. Traefik) and forwards all other requests to a configurable upstream DNS server.
+Intended for use in internal docker setups. E.g. resolving service.localhost to traefik.
 
-## Features
-
-* Wildcard resolution for `*.localhost`
-* Upstream forwarding for other domains
-* Lightweight, fast, and container-ready
-* Configuration via environment variables
+I built it for me, so if it doesn't work for you, so be it.
 
 ## Usage
 
@@ -56,6 +52,4 @@ networks:
     proxy:
         name: proxy
         external: true
-
 ```
-
