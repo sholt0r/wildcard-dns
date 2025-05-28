@@ -20,12 +20,12 @@ go build -o wildcard-dns
 
 ```bash
 docker build -t wildcard-dns .
+
 docker run --rm --expose 53/udp
--e DNS\_PORT=":53"
--e TRAEFIK\_IP="172.19.0.250"
--e DOMAIN\_ZONE="localhost"
--e UPSTREAM\_DNS="1.1.1.1:53"
-\--cap-add=NET\_ADMIN
+-e DNS_PORT=":53"
+-e TRAEFIK_IP="172.19.0.250"
+-e DOMAIN_ZONE="localhost"
+-e UPSTREAM_DNS="1.1.1.1:53"
 wildcard-dns
 ```
 
